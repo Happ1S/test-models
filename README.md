@@ -1,25 +1,29 @@
 # test-models
 
 ## code for LoRa 
-
+```
 import torch
 import horovod.torch as hvd
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, Trainer, TrainingArguments
 from datasets import load_dataset
 from peft import get_peft_model, LoraConfig
-
+```
 # Initialize Horovod
+```
 hvd.init()
-
+```
 # Pin GPU to local rank
+```
 torch.cuda.set_device(hvd.local_rank())
-
+```
 # Load the model and tokenizer
+```
 model_name = "LLaMA-8B"
 model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
 tokenizer = AutoTokenizer.from_pretrained(model_name)
-
+```
 # Apply LoRa to the model
+```
 lora_config = LoraConfig(
     r=16, # Number of LoRa ranks
     lora_alpha=32, # LoRa alpha
@@ -57,8 +61,9 @@ training_args = TrainingArguments(
     fp16=True, # Enable mixed precision training
     dataloader_num_workers=4,
 )
-
+```
 # Initialize the Trainer
+```
 trainer = Trainer(
     model=model,
     args=training_args,
@@ -68,3 +73,4 @@ trainer = Trainer(
 
 # Start training
 trainer.train()
+```
